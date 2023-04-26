@@ -1,0 +1,6 @@
+numpy
+os
+json
+requests
+streamlit_lottie
+
