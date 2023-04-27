@@ -8,7 +8,6 @@ import json
 import requests
 from streamlit_lottie import st_lottie
 
-
 # ===================================================================================
 st.set_page_config(
     page_title="Business app",
@@ -126,25 +125,27 @@ def store_ag(store, product, sales, budget):
 
     Revenue_split_output = Revenue_split_output[Revenue_split_output['forecasted_quantity'] > 0]
     # %%
-    st.write("Output Computed, download it in an excel file by clicking on Download button")
+    st.write("Output computed successfully, Preparing downloadable file now....")
     return Revenue_split_output
 
 
-# ===================================================================================s
-if "Revenue_split_outputx" not in st.session_state:
-    st.session_state.Revenue_split_outputx = None
+# ===================================================================================
 if st.button("Calculate Store AG"):
     if file1 and file2 and file3 and file4 is not None:
-        st.session_state.Revenue_split_outputx = store_ag(file1, file2, file3, file4)
+        df = store_ag(file1, file2, file3, file4)
+
+        # Convert the dataframe to an Excel file
+        excel_file = pd.ExcelWriter('store_ag_output.xlsx')
+        df.to_excel(excel_file, index=False)
+        excel_file.save()
+
+        # Create the download button
+        with open('store_ag_output.xlsx', 'rb') as f:
+            bytes_data = f.read()
+            st.download_button(label='Download Store AG Output', data=bytes_data, file_name='store_ag_output.xlsx',
+                               mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
     else:
         st.error("Please upload relevant files first")
 
-if st.button('Download Excel File'):
-    if st.session_state.Revenue_split_outputx is not None:
-        output_dir = os.path.join("D:/", "output")
-        os.makedirs(output_dir, exist_ok=True)
-        file_path = os.path.join(output_dir, "output.xlsx")
-        st.session_state.Revenue_split_outputx.to_excel(file_path, engine='openpyxl')
-        st.success(f"File saved to: {file_path}")
-    else:
-        st.error("Please press the Store AG button first")
+
+

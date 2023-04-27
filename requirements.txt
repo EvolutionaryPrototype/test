@@ -1,6 +1,5 @@
 numpy
-os
-json
+openpyxl
 requests
 streamlit_lottie
 
