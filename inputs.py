@@ -134,10 +134,9 @@ if st.button("Calculate Store AG"):
     if file1 and file2 and file3 and file4 is not None:
         df = store_ag(file1, file2, file3, file4)
 
-        # Convert the dataframe to an Excel file
-        excel_file = pd.ExcelWriter('store_ag_output.xlsx')
-        df.to_excel(excel_file, index=False)
-        excel_file.save()
+        # Write data to Excel file
+        with pd.ExcelWriter('store_ag_output.xlsx') as writer:
+            df.to_excel(writer, index=False)
 
         # Create the download button
         with open('store_ag_output.xlsx', 'rb') as f:
